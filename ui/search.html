@@ -1,0 +1,274 @@
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- <meta name="author" content="colorlib.com"> -->
+  <!-- <link href="https://fonts.googleapis.com/css?family=Poppins:400,800" rel="stylesheet" /> -->
+  <!-- <link href="css/main.css" rel="stylesheet" /> -->
+  
+  <!-- Load required Bootstrap and BootstrapVue CSS -->
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@2.21.2/dist/bootstrap-vue.min.css" />
+  
+  <!-- Load polyfills to support older browsers -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015,IntersectionObserver" crossorigin="anonymous"></script>
+  
+  <!-- Load Vue followed by BootstrapVue -->
+  <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+  <script src="https://unpkg.com/bootstrap-vue@2.21.2/dist/bootstrap-vue.js"></script>
+  
+  <!-- Load the following for BootstrapVueIcons support -->
+  <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+  
+  <script src="https://unpkg.com/vue-infinite-scroll@2.0.2/vue-infinite-scroll.js"></script>
+  
+  <style>
+    
+    .background-image{
+      background: radial-gradient(rgb(255 255 255 / 0%),rgb(0 0 0 / 72%)) ,linear-gradient(rgb(255 255 255 / 45%), rgb(255 255 255 / 45%)), url("images/bottles.jpg");
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+    }
+    
+    body {
+      margin: 0;
+      font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      font-size: .8125rem;
+      font-weight: 400;
+      line-height: 1.5385;
+      color: #333;
+      text-align: left;
+      background-color: #f5f5f5
+    }
+    
+    .mt-50 {
+      margin-top: 50px
+    }
+    
+    .mb-50 {
+      margin-bottom: 50px
+    }
+    
+    .bg-teal-400 {
+      background-color: #26a69a
+    }
+    
+    a {
+      text-decoration: none !important
+    }
+    
+    .fa {
+      color: red
+    }
+
+    .infinite-scroll-container{
+      height: 93vh;
+      overflow-y: scroll;
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+
+    .infinite-scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+
+  </style>
+  
+</head>
+
+<body class="background-image">
+  <div style="backdrop-filter: blur(5px); min-height: 100vh;">
+    <div id="page-container">
+      
+    </div>
+  </div>
+  
+  
+  
+  <template id="page-template">
+    <div>
+      
+      <b-navbar toggleable="lg" type="dark" variant="primary">
+        
+        <b-navbar-brand href="#">NavBar</b-navbar-brand>
+        
+        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+        
+        <b-collapse id="nav-collapse" is-nav>
+          
+          <!-- <b-nav-form> -->
+            <b-form-input size="md" class="mr-sm-2" placeholder="Search" v-model="query"></b-form-input>
+            <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
+            <!-- </b-nav-form> -->
+            
+            <!-- Right aligned nav items -->
+            <!-- <b-navbar-nav class="ml-auto"></b-navbar-nav> -->
+          </b-collapse>
+        </b-navbar>
+        
+        
+        
+        <!-- Body -->
+        <div>
+          <b-container>
+            <div class="infinite-scroll-container" v-infinite-scroll="getMoreItems" infinite-scroll-disabled="loading_more" infinite-scroll-distance="500">
+              
+              
+              <b-card no-body v-for="item in items" :key="item._id" class="mb-3 item-card">
+                <b-card-body>
+                  <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
+                    
+                    <div class="mr-2 mb-3 mb-lg-0"> 
+                      <b-img-lazy :src="item._source.img_url" height="150" alt=""> 
+                      </div>
+                      
+                      
+                      <div class="media-body">
+                        <h5 class="media-title font-weight-semibold"> <a :href="item._source.link">{{ item._source.name }}</a></h5>
+                        <ul class="list-inline list-inline-dotted mb-3 mb-lg-2">
+                          <li class="list-inline-item">
+                            <a href="#" class="text-muted" data-abc="true">
+                              <span class="badge badge-pill badge-primary">{{ item._source.primary_category }}</span>
+                            </a>
+                          </li>
+                          <li class="list-inline-item">
+                            <a href="#" class="text-muted" data-abc="true"><span class="badge badge-pill badge-info">{{ item._source.secondary_category }}</span></a>
+                          </li>
+                        </ul>
+                        <p class="mb-3">
+                          {{ item._source.description }}
+                        </p>
+                        <!-- <ul class="list-inline list-inline-dotted mb-0"> -->
+                          <!-- <li class="list-inline-item">All items from <a href="#" data-abc="true">Mobile point</a></li> -->
+                          <!-- <li class="list-inline-item">Add to <a href="#" data-abc="true">wishlist</a></li> -->
+                          <!-- </ul> -->
+                        </div>
+                        <div class="mt-3 mt-lg-0 ml-lg-3 text-center">
+                          <h3 class="mb-0 font-weight-semibold">${{ item._source.price }}</h3>
+                          <div>
+                            <span v-if="item._source.in_stock == 'no'" class="badge badge-danger">Sin Stock</span>
+                          </div>
+                          <!-- <div> 
+                            <i class="fa fa-star"></i> 
+                            <i class="fa fa-star"></i> 
+                            <i class="fa fa-star"></i> 
+                            <i class="fa fa-star"></i> 
+                          </div> -->
+                          <!-- <div class="text-muted">1985 reviews</div> <button type="button" class="btn btn-warning mt-4 text-white"><i class="icon-cart-add mr-2"></i> Add to cart</button> -->
+                        </div>
+                      </div>
+                    </b-card-body>
+                  </b-card>
+                </div>
+              </b-container>
+            </div>
+          </div>
+        </template>
+        
+        <script>
+          const app = new Vue({
+            el: '#page-container',
+            data: {
+              query: "",
+              items: null,
+              total_items: null,
+              current_last_item: null,
+              loading_more: false,
+            },
+            template: '#page-template',
+            created: function () {
+              this.debouncedGetItems = _.debounce(this.getItems, 500)
+            },
+            watch: {
+              // whenever question changes, this function will run
+              query: function (new_query, old_query) {
+                this.debouncedGetItems();
+              }
+            },
+            mounted(){
+              let query = new URLSearchParams(window.location.search).get('q')
+              if (query != ''){
+                this.query = query
+                this.getItems();
+              }
+              
+            },
+            methods: {
+              getItems: function () {
+                var vm = this
+                
+                query = {
+                  "query": {
+                    "multi_match": {
+                      "query" : this.query,
+                      "fields": ["primary_category","name", "description"]
+                    }
+                  }
+                }
+                // console.log( JSON.stringify(query));
+                axios.get('http://192.168.58.95:9200/items/_search', 
+                {
+                  params:{
+                    source: JSON.stringify(query),
+                    source_content_type: 'application/json'
+                  } 
+                  // data: JSON.stringify(query),
+                })
+                .then(function (response) {
+                  if (response && response.status == 200){
+                    vm.items = response.data.hits.hits
+                    vm.total_items = response.data.hits.total.value
+                    vm.current_last_item = vm.items.length;
+                  }
+                  console.log(response)
+                })
+                .catch(function (error) {
+                  vm.items = []
+                })
+              },
+              
+              getMoreItems(){
+                if (this.current_last_item >= this.total_items) return;
+                vm = this;
+                this.loading_more = true;
+                
+                query = {
+                  "from": this.current_last_item,
+                  "size": 10,
+                  "query": {
+                    "multi_match": {
+                      "query" : this.query,
+                      "fields": ["primary_category","name", "description"]
+                    }
+                  }
+                }
+                axios.get('http://192.168.58.95:9200/items/_search', 
+                {
+                  params:{
+                    source: JSON.stringify(query),
+                    source_content_type: 'application/json'
+                  } 
+                })
+                .then(function (response) {
+                  if (response && response.status == 200){
+                    console.log(response.data.hits.hits);
+                    vm.items = vm.items.concat(response.data.hits.hits);
+                    vm.current_last_item += response.data.hits.hits.length;
+                  }
+                  vm.loading_more = false
+                })
+                .catch(function (error) {
+                  this.loading_more = false;
+                })
+              }
+            }
+          });
+        </script>
+      </body>
+      </html>
