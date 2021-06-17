@@ -1,0 +1,36 @@
+version: '3'
+services:
+  scrapper:
+    build: .
+    container_name: scrapper_container
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
+    container_name: es_elgranbazarcervecero
+    volumes:
+        - "./es_data:/usr/share/elasticsearch/data:rw"
+    ports:
+        - '9200:9200'
+        - '9300:9300'
+    environment:
+        - discovery.type=single-node
+    #docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.13.1
+
+  kib01:
+    image: docker.elastic.co/kibana/kibana:7.13.1
+    container_name: kibana_elgranbazarcervecero
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://localhost:9200
+      # ELASTICSEARCH_HOSTS: '["http://es01:9200","http://es02:9200","http://es03:9200"]'
+    # networks:
+      # - elastic
+
+  apache:
+    image: 'bitnami/apache:latest'
+    ports:
+      - '7080:8080'
+      - '7443:8443'
+    volumes:
+      - ./:/app
