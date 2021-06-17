@@ -1,0 +1,9 @@
+.vscode/
+es_data/
+output.csv
+kibana_console_commands
+ui/index.html
+ui/font/
+ui/css/main.css
+mappings.json
+test_insert_es.py
