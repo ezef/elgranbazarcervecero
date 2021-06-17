@@ -33,4 +33,4 @@ services:
       - '7080:8080'
       - '7443:8443'
     volumes:
-      - ./:/app
+      - ./ui:/app
