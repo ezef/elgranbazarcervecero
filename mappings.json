@@ -18,8 +18,8 @@
 				"type": "keyword"
 			},
 			"in_stock": {"type": "keyword"},
-			"primary_category": {"type": "keyword"},
-			"secondary_category": {"type": "keyword"},
+			"primary_category": {"type": "text"},
+			"secondary_category": {"type": "text"},
 			"provider": {"type": "keyword"}
 		}
 	}
