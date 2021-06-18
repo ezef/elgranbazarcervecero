@@ -1,0 +1,26 @@
+
+{
+	"mappings" : {
+		"properties" : {
+			"product_id": {"type" : "integer"},
+			"name": {
+				"type": "text", 
+				"analyzer": "spanish"
+			},
+			"description": {
+				"type": "text", 
+				"analyzer": "spanish"
+			},
+			"link": {
+				"type": "keyword"
+			},
+			"img_url": {
+				"type": "keyword"
+			},
+			"in_stock": {"type": "keyword"},
+			"primary_category": {"type": "keyword"},
+			"secondary_category": {"type": "keyword"},
+			"provider": {"type": "keyword"}
+		}
+	}
+}

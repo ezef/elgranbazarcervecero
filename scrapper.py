@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 from pprint import pprint
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, helpers
 
 base_url = 'https://www.impcerveceros.com.ar'
 product_base_url = 'https://www.impcerveceros.com.ar/shop/product/'
@@ -52,7 +52,7 @@ def get_impcervereros_products():
     productslist = []
     page = 1
     
-    #while page <= 5: ## TODO change here the value to 19
+    # while page <= 1: ## TODO change here the value to 19
     while page <= get_last_page_of_shop(): 
         print('Fetching page ' + str(page))
         url = 'https://www.impcerveceros.com.ar/shop/page/' + str(page)
@@ -61,6 +61,7 @@ def get_impcervereros_products():
         page += 1
 
     for product in productslist:
+        product['provider'] = 'imp';
         product_soup = fetch_page(product_base_url + product['product_id'])
         product_description_soup = product_soup.find(id='product_details').find('p', 'text-muted mt-3')
         product['description'] = product_description_soup.text if product_description_soup is not None else ''
@@ -83,9 +84,24 @@ def load_on_elasticsearh(products):
         es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
         es.index(index='items',id='imp_' + p['product_id'] , body=p)
 
+def load_bulk_on_elasticsearch(products):
+    bulk_body = [];
+    for p in products:
+        bulk_body.append({
+            "_index": 'items',
+            "_id" : 'imp_' + p['product_id'],
+            "_source": p,
+        });
+
+    es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+    helpers.bulk(es, bulk_body);
+    # es.help(index='items',id='imp_' + p['product_id'] , body=p)
+    # es.helpper
+
 
 productslist = get_impcervereros_products()
 print('Loading on Elasticsearch index')
-load_on_elasticsearh(productslist)
+# load_on_elasticsearh(productslist)
+load_bulk_on_elasticsearch(productslist)
 pprint(productslist)
 # output(productslist)
