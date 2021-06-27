@@ -41,20 +41,13 @@ def parse_shop_page(soup):
         productslist.append(product)
     return productslist
 
-
-# def output(productslist):
-#     productsdf =  pd.DataFrame(productslist)
-#     productsdf.to_csv('output.csv', encoding='utf-8', index=False)
-#     print('Saved to CSV')
-#     return
-
 def get_impcervereros_products():
     productslist = []
     page = 1
     
     # while page <= 1: ## TODO change here the value to 19
     while page <= get_last_page_of_shop(): 
-        print('Fetching page ' + str(page))
+        # print('Fetching page ' + str(page))
         url = 'https://www.impcerveceros.com.ar/shop/page/' + str(page)
         soup = fetch_page(url)
         productslist += parse_shop_page(soup)
@@ -79,11 +72,6 @@ def get_last_page_of_shop():
     soup = fetch_page(base_url + '/shop/page/500')
     return int(soup.find('li', 'page-item active').text)
 
-def load_on_elasticsearh(products):
-    for p in products:
-        es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
-        es.index(index='items',id='imp_' + p['product_id'] , body=p)
-
 def load_bulk_on_elasticsearch(products):
     bulk_body = [];
     for p in products:
@@ -93,15 +81,14 @@ def load_bulk_on_elasticsearch(products):
             "_source": p,
         });
 
-    es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
+    es = Elasticsearch([{'host': 'es_elgranbazarcervecero', 'port': 9200}])
     helpers.bulk(es, bulk_body);
     # es.help(index='items',id='imp_' + p['product_id'] , body=p)
     # es.helpper
 
 
+pprint('Fetching IMP cerveceros products')
 productslist = get_impcervereros_products()
-print('Loading on Elasticsearch index')
-# load_on_elasticsearh(productslist)
+pprint('Loading on Elasticsearch index')
 load_bulk_on_elasticsearch(productslist)
-pprint(productslist)
-# output(productslist)
+pprint('Loaded IMP on Elasticsearch')
