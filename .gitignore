@@ -1,7 +1,4 @@
 .vscode/
 es_data/
-output.csv
 kibana_console_commands
-ui/font/
-ui/css/main.css
 test_insert_es.py
