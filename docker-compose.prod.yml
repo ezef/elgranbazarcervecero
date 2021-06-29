@@ -21,8 +21,8 @@ services:
       - 8500:8500
       - 8501:80
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d/
       - ./nginx/conf.d/elgranbazarcervecero.prod.conf:/etc/nginx/conf.d/default.conf
+      - ./ui/:/usr/share/nginx/html
 
 networks:
   default:
