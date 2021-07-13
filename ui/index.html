@@ -248,7 +248,7 @@
               "query": {
                 "multi_match": {
                   "query" : this.query,
-                  "type": "phrase_prefix",
+                  // "type": "phrase_prefix",
                   "fields": ["name^10", "primary_category^5", "secondary_category^5", "description"]
                 }
               }
@@ -285,8 +285,8 @@
               "query": {
                 "multi_match": {
                   "query" : this.query,
-                  "type": "phrase_prefix",
-                  "fields": ["primary_category","name", "description"]
+                  // "type": "phrase_prefix",
+                  "fields": ["name^10", "primary_category^5", "secondary_category^5", "description"]
                 }
               }
             }

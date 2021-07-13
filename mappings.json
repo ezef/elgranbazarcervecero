@@ -18,8 +18,14 @@
 				"type": "keyword"
 			},
 			"in_stock": {"type": "keyword"},
-			"primary_category": {"type": "text"},
-			"secondary_category": {"type": "text"},
+			"primary_category": {
+				"type": "text",
+				"analyzer": "spanish"
+			},
+			"secondary_category": {
+				"type": "text",
+				"analyzer": "spanish"
+			},
 			"provider": {"type": "keyword"}
 		}
 	}
